@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+    <head>
+        <title>ASL Captions</title>
+        <link rel="stylesheet" type="text/css" href="styles.css">
+    </head>
+    <body>
+        <div class="navbar">
+            <div class="nav-items">
+                <h1 class="title">ASL Video</h1>
+                <span id="filler"></span>
+                <div class="input">
+                    <input id="room-input" class="room-input" placeholder="Enter Room ID">
+                    <button onclick="createRoom()" class="button-32" id="create-button" role="button">Create Room</button>
+                    <button onclick="joinRoom()" class="button-32" id="join-button" role="button">Join Room</button>
+                </div>
+            </div>
+        </div>
+        <div class="meet-area">
+            <video id="remote-video"></video>
+            <video id="local-video"></video>
+        </div>
+    </body>
+    <script src="anime.min.js"></script>
+    <script src="https://unpkg.com/peerjs@1.3.2/dist/peerjs.min.js"></script>
+    <script defer src="script.js"></script>
+</html>
