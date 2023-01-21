@@ -1,3 +1,38 @@
+html, body, div, span, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, code,
+del, dfn, em, img, q, dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-weight: inherit;
+  font-style: inherit;
+  font-size: 100%;
+  font-family: inherit;
+}
+
+em {
+	font-style: italic;
+}
+
+strong {
+	font-weight: bold;
+}
+
+html,
+body {
+	margin:0;
+	padding:0;
+	height:100%;
+}
+
+body {
+    background-color: gray;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
 *,
 ::before,
 ::after {
@@ -11,6 +46,33 @@ a {
   text-decoration: underline;
 }
 
+.navbar {
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 99;
+  display: block;
+  background-color: #1C1D21;
+  color: white;
+  margin: 0;  
+  position: fixed;
+  backdrop-filter: blur(8px);
+  background-color: rgba(0, 0, 0, 0.1);
+}
+
+.nav-items {
+  display:flex;
+  padding: 1rem;
+}
+
+.title {
+  color: #ff84ce;
+  font-weight: bold;
+  font-size: 35pt;
+  font-family: 'Unbounded';
+  width: 15%;
+}
+
 #nav {
   z-index: 100;
   height: auto;
@@ -20,13 +82,10 @@ a {
   top: 0;
   left: 0;
   color: white;
-  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
-    "Lucida Sans", Arial, sans-serif;
-  font-size: 23px;
+  font-size: 20px;
   overflow: hidden;
-  backdrop-filter: blur(8px);
-  background-color: rgba(255, 255, 255, 0.028);
-  box-shadow: 1px 12px 21px 0px rgba(255, 255, 255, 0.028);
+
+  box-shadow: 1px 12px 21px 0px rgba(0, 0, 0, 0.028);
 }
 
 #nav-solid {
@@ -81,14 +140,17 @@ ul li {
 #main-title {
   text-align: center;
   position: relative;
-  top: 50%;
+  top: 25%;
   z-index: 10;
   /* background-color: white; */
   color: white;
 }
 
 #title {
-  font-size: 450%;
+  color: #ff84ce;
+  font-weight: bold;
+  font-size: 700%;
+  font-family: 'Unbounded';
 }
 
 .button-32 {
