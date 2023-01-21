@@ -17,7 +17,7 @@ function createRoom() {
   peer.on("open", (id) => {
     console.log("Peer Connected with ID: ", id);
     getUserMedia(
-      { video: true, audio: true },
+      { video: { width: 1280, height: 720 }, audio: true },
       (stream) => {
         local_stream = stream;
         setLocalStream(local_stream);
@@ -55,7 +55,6 @@ function setLocalStream(stream) {
 function setRemoteStream(stream) {
   let video = document.getElementById("remote-video");
   video.srcObject = stream;
-  video.play();
 }
 
 function joinRoom() {
