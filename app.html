@@ -68,6 +68,14 @@
         }
         
         remote_video.requestVideoFrameCallback(doSomethingWithFrame)
+
+
+        function angle(l1,l2) {
+          const ang = Math.acos((l1[0]*l2[0] + l1[1]*l2[1] + l1[2]*l2[2])/(Math.sqrt((l1[0])^2 + (l1[1])^2 + (l1[2])^2) * Math.sqrt((l2[0])^2 + (l2[1])^2 + (l2[2])^2)));
+          return ang;
+        }
+
+
         </script>
 </html>
 
