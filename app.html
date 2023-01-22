@@ -1,159 +1,249 @@
 <!DOCTYPE html>
-    <head>
-        <title>SignLink</title>
-        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-        <link rel="stylesheet" type="text/css" href="styles.css">
-    </head>
-    <body>
-        <div class="navbar">
-            <div class="nav-items">
-                <h1 class="title">SL</h1>
-                <span id="filler"></span>
-                <div class="input">
-                    <input id="room-input" class="room-input" placeholder="Enter Room ID">
-                    <button onclick="createRoom()" class="button-32" id="create-button" role="button">Create Room</button>
-                    <button onclick="joinRoom()" class="button-32" id="join-button" role="button">Join Room</button>
-                </div>
-            </div>
-        </div>
-        <div class="meet-area">
-            <div class="remote-container">
-                <video id="remote-video" autoplay></video>
-                <canvas id="remote-mediapipes-output"></canvas>
-            </div>
-            <video id="local-video"></video>
-        </div>
-    </body>
-    <script src="anime.min.js"></script>
-    <script src="https://unpkg.com/peerjs@1.3.2/dist/peerjs.min.js"></script>
-    <script defer src="script.js"></script>
-    <script defer type="module">
-        const remote_video = document.getElementById('remote-video');
-        const canvasElement = document.getElementById('remote-mediapipes-output');
-        const canvasCtx = canvasElement.getContext('2d');
+<head>
+  <title>SignLink</title>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"
+    crossorigin="anonymous"
+  ></script>
+  <script src="anime.min.js"></script>
 
-        let finger = {
-          thumb:{
-            angle_sum:0,
-            straightness : 0
-          },
-          index:{
-            angle_sum:0,
-            straightness : 0
-          },
-          middle:{
-            angle_sum:0,
-            straightness : 0
-          },
-          ring:{
-            angle_sum:0,
-            straightness : 0
-          },
-          pinky:{
-            angle_sum:0,
-            straightness : 0
+  <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+<body>
+  <div class="navbar">
+    <div class="nav-items">
+      <h1 class="title">SL</h1>
+      <span id="filler"></span>
+      <div class="input">
+        <input id="room-input" class="room-input" placeholder="Enter Room ID" />
+        <button
+          onclick="createRoom()"
+          class="button-32"
+          id="create-button"
+          role="button"
+        >
+          Create Room
+        </button>
+        <button
+          onclick="joinRoom()"
+          class="button-32"
+          id="join-button"
+          role="button"
+        >
+          Join Room
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="meet-area">
+    <div class="remote-container">
+      <video id="remote-video" autoplay></video>
+      <canvas id="remote-mediapipes-output"></canvas>
+    </div>
+    <video id="local-video"></video>
+  </div>
+</body>
+<script defer src="https://unpkg.com/peerjs@1.4.7/dist/peerjs.min.js"></script>
+<script defer src="script.js"></script>
+<script defer type="module">
+  const remote_video = document.getElementById("remote-video");
+  const canvasElement = document.getElementById("remote-mediapipes-output");
+  const canvasCtx = canvasElement.getContext("2d");
+
+  let finger = {
+    thumb: {
+      angle_sum: 0,
+      straightness: 0,
+    },
+    index: {
+      angle_sum: 0,
+      straightness: 0,
+    },
+    middle: {
+      angle_sum: 0,
+      straightness: 0,
+    },
+    ring: {
+      angle_sum: 0,
+      straightness: 0,
+    },
+    pinky: {
+      angle_sum: 0,
+      straightness: 0,
+    },
+  };
+
+  function onResults(results) {
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    canvasCtx.drawImage(
+      results.image,
+      0,
+      0,
+      canvasElement.width,
+      canvasElement.height
+    );
+    if (results.multiHandLandmarks) {
+      for (const landmarks of results.multiHandLandmarks) {
+        if (landmarks.length == 21) {
+          drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS, {
+            color: "#00FF00",
+            lineWidth: 0.5,
+          });
+          drawLandmarks(canvasCtx, landmarks, {
+            color: "#FF0000",
+            lineWidth: 0.5,
+          });
+
+          const L = landmarks;
+          for (let i = 0; i < L.length; i++) {
+            L[i].x -= L[0].x;
+            L[i].y -= L[0].y;
+            L[i].z -= L[0].z;
           }
-        };
-        
-        function onResults(results) {
-          canvasCtx.save();
-          canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-          canvasCtx.drawImage(
-              results.image, 0, 0, canvasElement.width, canvasElement.height);
-          if (results.multiHandLandmarks) {
-            
-            for (const landmarks of results.multiHandLandmarks) {
-                if (landmarks.length == 21){
+          // angles made here
+          finger.thumb.angle_sum =
+            angle(L[1], L[2], L[3]) + angle(L[2], L[3], L[4]); //angle(L[0],L[1],L[2])
+          finger.index.angle_sum =
+            angle(L[5], L[6], L[7]) + angle(L[6], L[7], L[8]);
+          finger.middle.angle_sum =
+            angle(L[9], L[10], L[11]) + angle(L[10], L[11], L[12]); //angle(L[0],L[9],L[10]) +
+          finger.ring.angle_sum =
+            angle(L[13], L[14], L[15]) + angle(L[14], L[15], L[16]); //angle(L[0],L[13],L[14]) +
+          finger.pinky.angle_sum =
+            angle(L[17], L[18], L[19]) + angle(L[18], L[19], L[20]); //angle(L[0],L[17],L[18]) +
 
-                  drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
-                                {color: '#00FF00', lineWidth: 0.5});
-                  drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 0.5});
-
-                  const L = landmarks;
-                  for (let i = 0; i < L.length; i++) {
-                    L[i].x -= L[0].x;
-                    L[i].y -= L[0].y;
-                    L[i].z -= L[0].z;
-                  }
-                  // angles made here
-                  finger.thumb.angle_sum =  angle(L[1],L[2],L[3]) + angle(L[2],L[3],L[4]); //angle(L[0],L[1],L[2]) 
-                  finger.index.angle_sum =  angle(L[5],L[6],L[7]) + angle(L[6],L[7],L[8]);
-                  finger.middle.angle_sum =  angle(L[9],L[10],L[11]) + angle(L[10],L[11],L[12]); //angle(L[0],L[9],L[10]) +
-                  finger.ring.angle_sum =  angle(L[13],L[14],L[15]) + angle(L[14],L[15],L[16]); //angle(L[0],L[13],L[14]) +
-                  finger.pinky.angle_sum =  angle(L[17],L[18],L[19]) + angle(L[18],L[19],L[20]); //angle(L[0],L[17],L[18]) +
-                  
-                  let predicted_letter = letter(finger.thumb.angle_sum, finger.index.angle_sum, finger.middle.angle_sum, finger.ring.angle_sum, finger.pinky.angle_sum);
-                  canvasCtx.font = "6px Arial";
-                  canvasCtx.fillText(Math.floor(finger.thumb.angle_sum),(landmarks[2].x*canvasElement.width),(landmarks[2].y*canvasElement.height));
-                  canvasCtx.fillText(Math.floor(finger.index.angle_sum),(landmarks[5].x*canvasElement.width),(landmarks[5].y*canvasElement.height));
-                  canvasCtx.fillText(Math.floor(finger.middle.angle_sum),(landmarks[9].x*canvasElement.width),(landmarks[9].y*canvasElement.height));
-                  canvasCtx.fillText(Math.floor(finger.ring.angle_sum),(landmarks[13].x*canvasElement.width),(landmarks[13].y*canvasElement.height));
-                  canvasCtx.fillText(Math.floor(finger.pinky.angle_sum),(landmarks[17].x*canvasElement.width),(landmarks[17].y*canvasElement.height));
-                  canvasCtx.font = "30px Arial";
-                  canvasCtx.fillStyle = 'red';
-                  canvasCtx.fillText(predicted_letter,5,canvasElement.height/2);
-                }
-            }
-          }
-          canvasCtx.restore();
+          let predicted_letter = letter(
+            finger.thumb.angle_sum,
+            finger.index.angle_sum,
+            finger.middle.angle_sum,
+            finger.ring.angle_sum,
+            finger.pinky.angle_sum
+          );
+          canvasCtx.font = "6px Arial";
+          canvasCtx.fillText(
+            Math.floor(finger.thumb.angle_sum),
+            landmarks[2].x * canvasElement.width,
+            landmarks[2].y * canvasElement.height
+          );
+          canvasCtx.fillText(
+            Math.floor(finger.index.angle_sum),
+            landmarks[5].x * canvasElement.width,
+            landmarks[5].y * canvasElement.height
+          );
+          canvasCtx.fillText(
+            Math.floor(finger.middle.angle_sum),
+            landmarks[9].x * canvasElement.width,
+            landmarks[9].y * canvasElement.height
+          );
+          canvasCtx.fillText(
+            Math.floor(finger.ring.angle_sum),
+            landmarks[13].x * canvasElement.width,
+            landmarks[13].y * canvasElement.height
+          );
+          canvasCtx.fillText(
+            Math.floor(finger.pinky.angle_sum),
+            landmarks[17].x * canvasElement.width,
+            landmarks[17].y * canvasElement.height
+          );
+          canvasCtx.font = "30px Arial";
+          canvasCtx.fillStyle = "red";
+          canvasCtx.fillText(predicted_letter, 5, canvasElement.height / 2);
         }
-        
-        const hands = new Hands({locateFile: (file) => {
-          return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
-        }});
-        hands.setOptions({
-          maxNumHands: 1,
-          modelComplexity: 1,
-          minDetectionConfidence: 0.3,
-          minTrackingConfidence: 0.3
-        });
-        hands.onResults(onResults);
+      }
+    }
+    canvasCtx.restore();
+  }
 
-        const doSomethingWithFrame = async (now,metadata) => {
-            await hands.send({image: remote_video});
-            remote_video.requestVideoFrameCallback(doSomethingWithFrame)
-        }
-        
-        remote_video.requestVideoFrameCallback(doSomethingWithFrame)
+  const hands = new Hands({
+    locateFile: (file) => {
+      return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+    },
+  });
+  hands.setOptions({
+    maxNumHands: 1,
+    modelComplexity: 1,
+    minDetectionConfidence: 0.3,
+    minTrackingConfidence: 0.3,
+  });
+  hands.onResults(onResults);
 
-        // function relative(L) {
-        //   for (let i = 0; i < L.length; i++){
-        //     L[i][1] -= L[0][1];
-        //     L[i][2] -= L[0][2];
-        //     L[i][3] -= L[0][3];
-        //     return L;
-        //   }
-        // }
+  const doSomethingWithFrame = async (now, metadata) => {
+    await hands.send({ image: remote_video });
+    remote_video.requestVideoFrameCallback(doSomethingWithFrame);
+  };
 
-        function angle(l1,l2,l3) {
-          const v1 = [l2.x - l1.x, l2.y - l1.y, l2.z - l1.z ];
-          const v2 = [l3.x - l2.x, l3.y - l2.y, l3.z - l2.z ];
-          const dotproduct = v1.reduce((a,b,i) => a+b*v2[i],0);
-          // const v1_mag = Math.sqrt((v1[0])^2 + (v1[1])^2 + (v1[2])^2);
-          const v1_mag = Math.hypot(v1[0], v1[1], v1[2]);
-          // const v2_mag = Math.sqrt((v2[0])^2 + (v2[1])^2 + (v2[2])^2);
-          const v2_mag = Math.hypot(v2[0], v2[1], v2[2]);
-          const rad = Math.acos(dotproduct/ (v1_mag * v2_mag));
-          return rad*180/Math.PI;
-        }
+  remote_video.requestVideoFrameCallback(doSomethingWithFrame);
 
-        function letter(thumb, index, middle, ring, pinky) {
-          if (thumb < 30 && index > 180 && middle > 180 && ring > 180 && pinky > 180){
-            return "A";
-          }
-      
+  // function relative(L) {
+  //   for (let i = 0; i < L.length; i++){
+  //     L[i][1] -= L[0][1];
+  //     L[i][2] -= L[0][2];
+  //     L[i][3] -= L[0][3];
+  //     return L;
+  //   }
+  // }
 
-          // else if (){
+  function angle(l1, l2, l3) {
+    const v1 = [l2.x - l1.x, l2.y - l1.y, l2.z - l1.z];
+    const v2 = [l3.x - l2.x, l3.y - l2.y, l3.z - l2.z];
+    const dotproduct = v1.reduce((a, b, i) => a + b * v2[i], 0);
+    // const v1_mag = Math.sqrt((v1[0])^2 + (v1[1])^2 + (v1[2])^2);
+    const v1_mag = Math.hypot(v1[0], v1[1], v1[2]);
+    // const v2_mag = Math.sqrt((v2[0])^2 + (v2[1])^2 + (v2[2])^2);
+    const v2_mag = Math.hypot(v2[0], v2[1], v2[2]);
+    const rad = Math.acos(dotproduct / (v1_mag * v2_mag));
+    return (rad * 180) / Math.PI;
+  }
 
-          // }
+  function letter(thumb, index, middle, ring, pinky) {
+    if (
+      thumb < 30 &&
+      index > 180 &&
+      middle > 180 &&
+      ring > 180 &&
+      pinky > 180
+    ) {
+      return "A";
+    } else if (
+      thumb > 50 &&
+      index < 10 &&
+      middle < 10 &&
+      ring < 10 &&
+      pinky < 10
+    ) {
+      return "B";
 
-          return 'xx';
-        };
+    } else if (
+      thumb < 65 &&
+      index < 160 &&
+      middle < 160 &&
+      ring < 160 &&
+      pinky < 160
+    ) {
+      return "C";
 
-        </script>
-</html>
+    } else if (
 
-<!-- hello -->
+
+
+    ) {
+
+
+    }
+
+    return "xx";
+  }
+</script>
