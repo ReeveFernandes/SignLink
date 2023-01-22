@@ -154,7 +154,7 @@ body {
   padding: 10px 15px;
   text-align: center;
   transition: 200ms;
-  width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   border: 0;
   font-size: 16px;

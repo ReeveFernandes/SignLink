@@ -7,3 +7,4 @@ window.onscroll = function () {
     myNav.classList.remove("nav-solid");
   }
 };
+
