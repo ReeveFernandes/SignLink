@@ -198,8 +198,8 @@
   // }
 
   function angle(l1, l2, l3) {
-    const v1 = [l2.x - l1.x, l2.y - l1.y, l2.z - l1.z];
-    const v2 = [l3.x - l2.x, l3.y - l2.y, l3.z - l2.z];
+    const v1 = [l2[0] - l1[0], l2[1] - l1[1], l2[2] - l1[2]];
+    const v2 = [l3[0] - l2[0], l3[1] - l2[1], l3[2] - l2[2]];
     const dotproduct = v1.reduce((a, b, i) => a + b * v2[i], 0);
     // const v1_mag = Math.sqrt((v1[0])^2 + (v1[1])^2 + (v1[2])^2);
     const v1_mag = Math.hypot(v1[0], v1[1], v1[2]);
@@ -257,8 +257,8 @@
       6 < middle < 10 &&
       3 < ring < 10 &&
       5 < pinky < 10 &&
-      L[4].z > L[5].z &&
-      L[8].z > L[5].z
+      //L[4].z > L[5].z &&
+      //L[8].z > L[5].z
     ) {
       return "F";
     } else if (
