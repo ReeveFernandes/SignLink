@@ -1,9 +1,46 @@
-html, body, div, span, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, code,
-del, dfn, em, img, q, dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td {
+html,
+body,
+div,
+span,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+code,
+del,
+dfn,
+em,
+img,
+q,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td {
   margin: 0;
   padding: 0;
   border: 0;
@@ -14,23 +51,24 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 }
 
 em {
-	font-style: italic;
+  font-style: italic;
 }
 
 strong {
-	font-weight: bold;
+  font-weight: bold;
 }
 
 html,
 body {
-	margin:0;
-	padding:0;
-	height:100%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
 body {
-    background-color: gray;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: gray;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
 }
 
 *,
@@ -52,9 +90,9 @@ a {
   width: 100%;
   z-index: 99;
   display: block;
-  background-color: #1C1D21;
+  background-color: #1c1d21;
   color: white;
-  margin: 0;  
+  margin: 0;
   position: fixed;
   backdrop-filter: blur(8px);
   background-color: rgba(0, 0, 0, 0.1);
@@ -62,20 +100,19 @@ a {
 
 .nav-items {
   width: 100vw;
-  display:flex;
+  display: flex;
   padding: 1rem;
 }
 
 .nav-items-right {
   color: #ff84ce;
-  width:100%;
+  width: 100%;
   text-align: right;
-
 }
 
 .nav-items-right ul li {
   display: inline-block;
-  padding: 12px 30px;;
+  padding: 12px 30px;
 }
 
 .nav-items-right ul li a {
@@ -84,12 +121,11 @@ a {
   font-size: 20px;
 }
 
-
 .title {
   color: #ff84ce;
   font-weight: bold;
   font-size: 35pt;
-  font-family: 'Unbounded';
+  font-family: "Unbounded";
   width: 15%;
 }
 
@@ -157,12 +193,11 @@ ul li {
   opacity: 0.5;
 }
 
-#info
- {
+#info {
   position: relative;
   height: 100vh;
   width: 100vw;
-  background-color: #1C1D21;
+  background-color: #1c1d21;
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -198,7 +233,7 @@ ul li {
   color: #ff84ce;
   font-weight: bold;
   font-size: 700%;
-  font-family: 'Unbounded';
+  font-family: "Unbounded";
 }
 
 .button-32 {

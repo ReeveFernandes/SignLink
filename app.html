@@ -22,6 +22,9 @@
   <link rel="stylesheet" type="text/css" href="styles.css" />
 </head>
 <body>
+  <div id="overlay">
+    <div id="overlay-text"></div>
+  </div>
   <div class="navbar">
     <div class="nav-items">
       <h1 class="title">SL</h1>
@@ -115,15 +118,23 @@
           }
           // angles made here
           finger.thumb.angle_sum =
-            angle(L[1], L[2], L[3]) + angle(L[2], L[3], L[4]); //angle(L[0],L[1],L[2])
+            angle(L[1], L[2], L[3]) + angle(L[2], L[3], L[4]);
           finger.index.angle_sum =
             angle(L[5], L[6], L[7]) + angle(L[6], L[7], L[8]);
           finger.middle.angle_sum =
-            angle(L[9], L[10], L[11]) + angle(L[10], L[11], L[12]); //angle(L[0],L[9],L[10]) +
+            angle(L[9], L[10], L[11]) + angle(L[10], L[11], L[12]);
           finger.ring.angle_sum =
-            angle(L[13], L[14], L[15]) + angle(L[14], L[15], L[16]); //angle(L[0],L[13],L[14]) +
+            angle(L[13], L[14], L[15]) + angle(L[14], L[15], L[16]);
           finger.pinky.angle_sum =
-            angle(L[17], L[18], L[19]) + angle(L[18], L[19], L[20]); //angle(L[0],L[17],L[18]) +
+            angle(L[17], L[18], L[19]) + angle(L[18], L[19], L[20]);
+          let index_middle_tip_dist = distance3d(
+            L[8].x,
+            L[8].y,
+            L[8].z,
+            L[12].x,
+            L[12].y,
+            L[12].z
+          );
 
           let predicted_letter = letter(
             finger.thumb.angle_sum,
@@ -131,7 +142,7 @@
             finger.middle.angle_sum,
             finger.ring.angle_sum,
             finger.pinky.angle_sum,
-            L
+            index_middle_tip_dist
           );
           canvasCtx.font = "6px Arial";
           canvasCtx.fillText(
@@ -176,7 +187,7 @@
   hands.setOptions({
     maxNumHands: 1,
     modelComplexity: 1,
-    minDetectionConfidence: 0.3,
+    minDetectionConfidence: 0.5,
     minTrackingConfidence: 0.3,
   });
   hands.onResults(onResults);
@@ -188,120 +199,89 @@
 
   remote_video.requestVideoFrameCallback(doSomethingWithFrame);
 
-  // function relative(L) {
-  //   for (let i = 0; i < L.length; i++){
-  //     L[i][1] -= L[0][1];
-  //     L[i][2] -= L[0][2];
-  //     L[i][3] -= L[0][3];
-  //     return L;
-  //   }
-  // }
+  function distance3d(x1, y1, z1, x2, y2, z2) {
+    return Math.sqrt(
+      Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2) + Math.pow(z2 - z1, 2)
+    );
+  }
 
   function angle(l1, l2, l3) {
-    const v1 = [l2[0] - l1[0], l2[1] - l1[1], l2[2] - l1[2]];
-    const v2 = [l3[0] - l2[0], l3[1] - l2[1], l3[2] - l2[2]];
+    const v1 = [l2.x - l1.x, l2.y - l1.y, l2.z - l1.z];
+    const v2 = [l3.x - l2.x, l3.y - l2.y, l3.z - l2.z];
     const dotproduct = v1.reduce((a, b, i) => a + b * v2[i], 0);
-    // const v1_mag = Math.sqrt((v1[0])^2 + (v1[1])^2 + (v1[2])^2);
     const v1_mag = Math.hypot(v1[0], v1[1], v1[2]);
-    // const v2_mag = Math.sqrt((v2[0])^2 + (v2[1])^2 + (v2[2])^2);
     const v2_mag = Math.hypot(v2[0], v2[1], v2[2]);
     const rad = Math.acos(dotproduct / (v1_mag * v2_mag));
     return (rad * 180) / Math.PI;
   }
 
-  function letter(thumb, index, middle, ring, pinky, L) {
-    if (
-      85 > thumb > 50 &&
-      5 < index < 15 &&
-      5 < middle < 15 &&
-      5 < ring < 15 &&
-      0 < pinky < 8
-    ) {
-      return "B";
-    } else if (
-      thumb < 65 &&
-      index < 160 &&
-      middle < 160 &&
-      ring < 160 &&
-      pinky < 160 &&
-      angle()
-    ) {
-      return "C";
-    } else if (
-      thumb < 80 &&
-      index < 15 &&
-      middle < 170 &&
-      ring < 170 &&
-      pinky < 170
-    ) {
-      return "D";
-    } else if (
-      thumb < 80 &&
-      index < 180 &&
-      middle < 180 &&
-      ring < 180 &&
-      pinky < 180
-    ) {
-      return "E";
-    } else if (
-      thumb < 60 &&
-      index < 125 &&
-      middle < 20 &&
-      ring < 20 &&
-      pinky < 20
-    ) {
-      return "E";
-    } else if (
-      10 < thumb < 25 &&
-      115 < index < 150 &&
-      6 < middle < 10 &&
-      3 < ring < 10 &&
-      5 < pinky < 10
-      //L[4].z > L[5].z &&
-      //L[8].z > L[5].z
-    ) {
-      return "F";
-    } else if (
-      thumb < 100 &&
-      index < 10 &&
-      middle < 150 &&
-      ring < 150 &&
-      pinky < 120
-    ) {
-      return "G";
-    } else if (
-      thumb < 100 &&
-      index < 15 &&
-      middle < 15 &&
-      ring < 160 &&
-      pinky < 130
-    ) {
-      return "H";
-    } else if (
-      thumb < 90 &&
-      index < 165 &&
-      middle < 165 &&
-      ring < 165 &&
-      pinky < 8
-    ) {
-      return "I";
-    } else if (
-      thumb < 25 &&
-      index < 5 &&
-      middle < 8 &&
-      ring < 160 &&
-      pinky < 155
-    ) {
-      return "J";
-    } else if (
-      35 < thumb < 40 &&
-      250 < index < 280 &&
-      250 < middle < 280 &&
-      250 < ring < 280 &&
-      250 < pinky < 280
-    ) {
-      return "A";
+  function letter(thumb, index, middle, ring, pinky, tip_dist) {
+    if (index > 50 && middle > 50 && ring > 50 && pinky > 50) {
+      if (middle <= 170 && ring <= 170) {
+        if (thumb > 80) {
+          return "C";
+        } else {
+          return "O";
+        }
+      }
+      if (thumb > 80) {
+        return "E";
+      } else if (thumb > 20 && thumb <= 80) {
+        return "T";
+      } else {
+        return "A";
+      }
     }
-    return "N.A.";
+    if (middle > 50 && ring > 50 && pinky > 50) {
+      if (thumb > 70) {
+        return "D";
+      } else {
+        return "L";
+      }
+    }
+    if (index > 50 && middle > 50 && ring > 50) {
+      if (thumb > 70) {
+        return "I";
+      } else {
+        return "Y";
+      }
+    }
+    if (ring > 50 && pinky > 50) {
+      if (thumb > 70) {
+        if (tip_dist > 0.2) {
+          return "V";
+        } else {
+          return "U";
+        }
+      } else {
+        if (tip_dist > 0.2) {
+          return "K";
+        } else {
+          return "H";
+        }
+      }
+    }
+    if (middle > 70 && ring > 70) {
+      if (thumb < 20) {
+        return "i<3u";
+      }
+    }
+    if (pinky > 50) {
+      if (thumb > 20) {
+        return "W";
+      }
+    }
+    if (index > 50) {
+      if (thumb > 20) {
+        return "F";
+      }
+    }
+    if (thumb > 40) {
+      return "B";
+    }
+    if (thumb > 15) {
+      return "Hi";
+    }
+    return "NA";
   }
 </script>

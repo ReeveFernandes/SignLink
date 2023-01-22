@@ -15,7 +15,7 @@ function createRoom() {
   join_button = document.getElementById("join-button");
   peer = new Peer(room_id);
   peer.on("open", (id) => {
-    console.log("Peer Connected with ID: ", id);
+    overlay(`Peer Connected with ID: ${id}`);
     getUserMedia(
       { video: { width: 1280, height: 720 }, audio: true },
       (stream) => {
@@ -42,7 +42,13 @@ function createRoom() {
 }
 
 function overlay(msg) {
-  console.log(msg);
+  overlay_el = document.getElementById("overlay");
+  overlay_text = document.getElementById("overlay-text");
+  overlay_text.textContent = msg;
+  overlay_el.hidden = false;
+  setTimeout(() => {
+    overlay_el.hidden = true;
+  }, 3000);
 }
 
 function setLocalStream(stream) {
@@ -59,7 +65,7 @@ function setRemoteStream(stream) {
 
 function joinRoom() {
   join_button = document.getElementById("join-button");
-  console.log("Joining Room");
+  overlay("Joining Room");
   let room = document.getElementById("room-input").value;
   if (room == " " || room == "") {
     alert("Please enter room number");
