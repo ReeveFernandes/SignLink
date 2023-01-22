@@ -130,7 +130,8 @@
             finger.index.angle_sum,
             finger.middle.angle_sum,
             finger.ring.angle_sum,
-            finger.pinky.angle_sum
+            finger.pinky.angle_sum,
+            L
           );
           canvasCtx.font = "6px Arial";
           canvasCtx.fillText(
@@ -208,21 +209,13 @@
     return (rad * 180) / Math.PI;
   }
 
-  function letter(thumb, index, middle, ring, pinky) {
+  function letter(thumb, index, middle, ring, pinky, L) {
     if (
-      thumb < 30 &&
-      index > 180 &&
-      middle > 180 &&
-      ring > 180 &&
-      pinky > 180
-    ) {
-      return "A";
-    } else if (
-      thumb > 50 &&
-      index < 10 &&
-      middle < 10 &&
-      ring < 10 &&
-      pinky < 10
+      85 > thumb > 50 &&
+      5 < index < 15 &&
+      5 < middle < 15 &&
+      5 < ring < 15 &&
+      0 < pinky < 8
     ) {
       return "B";
     } else if (
@@ -230,11 +223,85 @@
       index < 160 &&
       middle < 160 &&
       ring < 160 &&
-      pinky < 160
+      pinky < 160 &&
+      angle()
     ) {
       return "C";
+    } else if (
+      thumb < 80 &&
+      index < 15 &&
+      middle < 170 &&
+      ring < 170 &&
+      pinky < 170
+    ) {
+      return "D";
+    } else if (
+      thumb < 80 &&
+      index < 180 &&
+      middle < 180 &&
+      ring < 180 &&
+      pinky < 180
+    ) {
+      return "E";
+    } else if (
+      thumb < 60 &&
+      index < 125 &&
+      middle < 20 &&
+      ring < 20 &&
+      pinky < 20
+    ) {
+      return "E";
+    } else if (
+      10 < thumb < 25 &&
+      115 < index < 150 &&
+      6 < middle < 10 &&
+      3 < ring < 10 &&
+      5 < pinky < 10 &&
+      L[4].z > L[5].z &&
+      L[8].z > L[5].z
+    ) {
+      return "F";
+    } else if (
+      thumb < 100 &&
+      index < 10 &&
+      middle < 150 &&
+      ring < 150 &&
+      pinky < 120
+    ) {
+      return "G";
+    } else if (
+      thumb < 100 &&
+      index < 15 &&
+      middle < 15 &&
+      ring < 160 &&
+      pinky < 130
+    ) {
+      return "H";
+    } else if (
+      thumb < 90 &&
+      index < 165 &&
+      middle < 165 &&
+      ring < 165 &&
+      pinky < 8
+    ) {
+      return "I";
+    } else if (
+      thumb < 25 &&
+      index < 5 &&
+      middle < 8 &&
+      ring < 160 &&
+      pinky < 155
+    ) {
+      return "J";
+    } else if (
+      35 < thumb < 40 &&
+      250 < index < 280 &&
+      250 < middle < 280 &&
+      250 < ring < 280 &&
+      250 < pinky < 280
+    ) {
+      return "A";
     }
-
-    return "xx";
+    return "N.A.";
   }
 </script>
