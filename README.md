@@ -40,3 +40,9 @@ We have acquired knowledge and skills in utilising various technologies and tool
 
 # What's next for SignLink
 Potential future developments for this concept could include the creation of a mobile application to enhance accessibility and improve the accuracy of sign language translation. The current implementation utilizes letter-to-letter translation, however, incorporating advanced machine learning techniques would allow for recognition of compounded expressions, movement, and sign language, resulting in a more effective and holistic form of communication. The inclusion of live captioning and transcription functionality would also be beneficial. Furthermore, implementing support for multiple languages would promote inclusivity and cater to a diverse range of users.
+
+# Try it out
+1. Use this link : https://comforting-choux-7538b6.netlify.app/
+2. Click on 'Try it'
+3. Create a new room.
+4. Share the unique ID to the other participant to 'join' the vedio call.
